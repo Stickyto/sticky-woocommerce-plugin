@@ -2,8 +2,8 @@
 /*
 Plugin Name: Sticky WooCommerce Plugin
 Description: Sticky WooCommerce Plugin.
-Version: 1.0
-Author: Zakariya Mohummed
+Version: 1.1
+Author: James Garner / Zakariya Mohummed
 */
 
 // Ensure WooCommerce is active
@@ -131,13 +131,19 @@ function init_custom_payment_gateway() {
                     'flow_url' => array(
                         'title' => 'Flow URL',
                         'type' => 'text',
-                        'description' => 'Enter the flow URL for your sticky payment gateway.',
+                        'description' => 'Enter the flow URL for your payment gateway.',
                         'default' => 'https://sticky.to/go/flow/123',
+                    ),
+                    'do_on_hold' => array(
+                        'title' => 'Put orders on "On Hold" before redirecting',
+                        'type' => 'checkbox',
+                        'label' => 'Set the order to "on-hold" before redirecting.',
+                        'default' => 'yes',
                     ),
                     'private_key' => array(
                         'title' => 'Private Key',
                         'type' => 'text',
-                        'description' => 'Enter the private key for your sticky payment gateway.',
+                        'description' => 'Enter the private key for your payment gateway.',
                         'default' => 'private-456',
                     ),
                 );
@@ -164,8 +170,9 @@ function init_custom_payment_gateway() {
                 // Construct the final URL with the hash signature
                 $redirect_url = "{$flow}?{$dataString}&hash={$hash}";
 
-                // Update the order status
-                $order->update_status('on-hold', __('Awaiting Sticky WooCommerce Plugin confirmation.', 'woocommerce'));
+                if ($this->get_option('do_on_hold') === 'yes') {
+                    $order->update_status('on-hold', __('Awaiting Sticky WooCommerce Plugin confirmation.', 'woocommerce'));
+                }
 
                 return array(
                     'result' => 'success',
