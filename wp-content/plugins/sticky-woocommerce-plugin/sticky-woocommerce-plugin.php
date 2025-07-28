@@ -182,7 +182,7 @@ function init_custom_payment_gateway() {
                     $order->update_status('on-hold', __('Awaiting Sticky WooCommerce Plugin confirmation.', 'woocommerce'));
                 }
 
-                if ($use_popup) {
+                if ($usePopup) {
                     return array(
                         'result'   => 'success',
                         'messages' => '<script>
