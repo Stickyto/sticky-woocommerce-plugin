@@ -240,7 +240,7 @@ function init_custom_payment_gateway() {
                                             left: 0;
                                             bottom: 0;
                                             right: 0;
-                                            z-index: 99;
+                                            z-index: 999;
                                         }
                                         .pop-up-frame--inside {
                                             display: block;
@@ -254,7 +254,7 @@ function init_custom_payment_gateway() {
                                             top: 50%;
                                             left: 50%;
                                             transform: translate(-50%, -50%);
-                                            z-index: 100;
+                                            z-index: 1000;
                                             box-shadow: rgba(60, 68, 86, 0.2) 0px 3px 6px 0px, rgba(0, 0, 0, 0.2) 0px 1px 2px 0px;
                                             border: 0;
                                         }
@@ -269,7 +269,7 @@ function init_custom_payment_gateway() {
                                             position: absolute;
                                             top: 20px;
                                             right: 20px;
-                                            z-index: 101;
+                                            z-index: 1001;
                                             box-shadow: 0 2px 4px 0 rgb(60 66 87 / 40%), 0 2px 4px 0 rgb(0 0 0 / 40%);
                                         }
                                         .pop-up-frame--button svg {
