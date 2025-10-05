@@ -2,7 +2,7 @@
 /*
 Plugin Name: Sticky WooCommerce Plugin
 Description: Sticky WooCommerce Plugin.
-Version: 1.1
+Version: 1.2
 Author: James Garner / Zakariya Mohummed
 */
 
@@ -240,7 +240,7 @@ function init_custom_payment_gateway() {
                                             left: 0;
                                             bottom: 0;
                                             right: 0;
-                                            z-index: 999;
+                                            z-index: 100000;
                                         }
                                         .pop-up-frame--inside {
                                             display: block;
@@ -254,7 +254,7 @@ function init_custom_payment_gateway() {
                                             top: 50%;
                                             left: 50%;
                                             transform: translate(-50%, -50%);
-                                            z-index: 1000;
+                                            z-index: 1000001;
                                             box-shadow: rgba(60, 68, 86, 0.2) 0px 3px 6px 0px, rgba(0, 0, 0, 0.2) 0px 1px 2px 0px;
                                             border: 0;
                                         }
@@ -307,6 +307,7 @@ function init_custom_payment_gateway() {
                                         }
                                         if (src && insideElementName === "iframe") {
                                             e.src = src
+                                            e.allow = "payment *"
                                         }
                                         if (typeof inlineStyle === "string") {
                                             e.style = inlineStyle
@@ -343,7 +344,7 @@ function init_custom_payment_gateway() {
                                     }
                                 }
 
-                                popUpIframe({ src: "' . $redirect_url . '" })
+                                popUpIframe({ src: "' . $redirect_url . '", canClose: false })
                             })();
                         </script>',
                     );
@@ -364,3 +365,31 @@ function add_custom_payment_gateway($gateways) {
     $gateways[] = 'WC_Sticky_Payment_Gateway';
     return $gateways;
 }
+
+/**
+ * Allow Apple Pay inside iframe from pay.sticky.to
+ * by setting the modern Permissions-Policy header
+ * and the legacy Feature-Policy header for older Safari/WebKit.
+ */
+add_filter('wp_headers', function ($headers) {
+  if (function_exists('is_checkout') && is_checkout()) {
+    $pp_value = 'payment=(self "https://pay.sticky.to")';
+    $fp_value = "payment 'self' https://pay.sticky.to";
+
+    // Merge/append Permissions-Policy
+    if (isset($headers['Permissions-Policy']) && $headers['Permissions-Policy'] !== '') {
+      $headers['Permissions-Policy'] .= ', ' . $pp_value;
+    } else {
+      $headers['Permissions-Policy'] = $pp_value;
+    }
+
+    // Also set legacy Feature-Policy for older WebKit/Safari error messaging
+    if (isset($headers['Feature-Policy']) && $headers['Feature-Policy'] !== '') {
+      // If a policy exists, append our directive
+      $headers['Feature-Policy'] .= ', ' . $fp_value;
+    } else {
+      $headers['Feature-Policy'] = $fp_value;
+    }
+  }
+  return $headers;
+}, 10);
