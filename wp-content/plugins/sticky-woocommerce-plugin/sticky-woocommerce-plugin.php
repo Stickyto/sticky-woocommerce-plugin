@@ -163,11 +163,15 @@ function init_custom_payment_gateway() {
             public function process_payment($order_id) {
                 $order = wc_get_order($order_id);
                 $order_total = number_format($order->get_total(), 2, '', '');
-                $currency = get_woocommerce_currency();
+                $currency = $order->get_currency();
                 $userPaymentId = $order_id; // Use the WooCommerce order ID as the payment ID
                 $flow = $this->get_option('flow_url'); // Retrieve the flow URL from the settings
                 $privateKey = $this->get_option('private_key'); // Retrieve the private key from the settings
                 $usePopup = 'yes' === $this->get_option('popup_iframe', 'no');
+                // Detect WooCommerce "Pay for Order" flow (order-pay endpoint)
+                $is_order_pay = (function_exists('is_wc_endpoint_url') && is_wc_endpoint_url('order-pay')) || isset($_POST['woocommerce-pay-nonce']);
+                // In order-pay, avoid DOM injection/popup and always return a redirect
+                $usePopup = $usePopup && !$is_order_pay;
 
                 // Construct the data string for hashing
                 $dataString = "total={$order_total}&currency={$currency}&userPaymentId={$userPaymentId}";
