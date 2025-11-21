@@ -2,8 +2,8 @@
 /*
 Plugin Name: Sticky WooCommerce Plugin
 Description: Sticky WooCommerce Plugin.
-Version: 1.2
-Author: James Garner / Zakariya Mohummed
+Version: 1.3
+Author: James Garner
 */
 
 // Ensure WooCommerce is active
@@ -138,7 +138,7 @@ function init_custom_payment_gateway() {
                     'flow_url' => array(
                         'title' => 'Flow URL',
                         'type' => 'text',
-                        'description' => 'Enter the flow URL for your payment gateway.',
+                        'description' => 'Enter your flow URL.',
                         'default' => 'https://sticky.to/go/flow/123',
                     ),
                     'do_on_hold' => array(
@@ -150,7 +150,7 @@ function init_custom_payment_gateway() {
                     'private_key' => array(
                         'title' => 'Private Key',
                         'type' => 'text',
-                        'description' => 'Enter the private key for your payment gateway.',
+                        'description' => 'Enter your private key.',
                         'default' => 'private-456',
                     ),
                 );
